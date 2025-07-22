@@ -145,7 +145,48 @@ void encodeFile(const string& inputPath, const string& outputPath, const unorder
         cerr << "Error opening files: " << inputPath << ", " << outputPath << endl;
     }
 }
+void decodeFile(const string& inputPath, const string& outputPath, Node* root) {
+    ifstream inputFile(inputPath, ios::binary);
+    ofstream outputFile(outputPath);
 
+    if (inputFile.is_open() && outputFile.is_open()) {
+        // First, read the original length
+        int originalLength;
+        inputFile.read(reinterpret_cast<char*>(&originalLength), sizeof(int));
+         Node* current = root;
+        char byte;
+        string result = "";
+        int decodedCount = 0;
+        
+        while (inputFile.get(byte) && decodedCount < originalLength) {
+            bitset<8> bits(byte);
+            
+            for (int i = 7; i >= 0 && decodedCount < originalLength; i--) {
+                if (current == nullptr) {
+                    break;
+                }
+                
+                if (bits[i] == 0) {
+                    current = current->left;
+                } else {
+                    current = current->right;
+                }
+                
+                if (current != nullptr && current->isLeaf()) {
+                    result += current->data;
+                    decodedCount++;
+                    current = root;
+                }
+            }
+        }
+        
+        outputFile << result; //used to write the value of the result variable to an output file stream object named outputFile
+        inputFile.close();
+        outputFile.close();
+    } else {
+        cerr << "Error opening files for decompression: " << inputPath << ", " << outputPath << endl;
+    }
+}
 // Clean up the Huffman tree by deleting all nodes
 void deleteTree(Node* root) {
     if (root == nullptr) {
