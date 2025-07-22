@@ -40,16 +40,16 @@ struct Compare {
 
 // Generate the frequency map for characters in a file
 unordered_map<char, int> getFrequencies(const string& filePath) {
-    ifstream file(filePath, ios::binary);
+    ifstream file(filePath, ios::binary);//to read data from files ios::binary helps to access the file in binary format
     unordered_map<char, int> frequencies;
 
-    if (file.is_open()) {
+    if (file.is_open()) {//used to check whether the file is successfully opened and associated with the stream
         char c;
-        while (file.get(c)) {
+        while (file.get(c)) {//reads a single character from the file 
             frequencies[c]++;
         }
 
-        file.close();
+        file.close();//to close the file that has been opened using a file stream object
     } else {
         cerr << "Error opening file: " << filePath << endl;
     }
@@ -104,7 +104,9 @@ void generateCodes(Node* root, const string& currentCode, unordered_map<char, st
 // Encode the input file using Huffman codes
 void encodeFile(const string& inputPath, const string& outputPath, const unordered_map<char, string>& codes) {
     ifstream inputFile(inputPath, ios::binary);
-    ofstream outputFile(outputPath, ios::binary | ios::trunc);
+    ofstream outputFile(outputPath, ios::binary | ios::trunc);    //declares an output file stream object named outputFile and opens a file for writing. 
+    //The ios::binary flag specifies that the file should be treated as a binary file, 
+    //while ios::trunc ensures that any existing content in the file is deleted before writing
 
     if (inputFile.is_open() && outputFile.is_open()) {
         char c;
